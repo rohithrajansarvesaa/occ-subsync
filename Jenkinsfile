@@ -17,7 +17,7 @@ pipeline {
             steps {
                 echo '📥 Cloning repository from GitHub...'
                 git branch: 'dev',
-                    url: 'https://github.com/rohithrajansarvesaa/OCC-subsync-.git'
+                    url: 'https://github.com/rohithrajansarvesaa/occ-subsync.git'
             }
         }
 
