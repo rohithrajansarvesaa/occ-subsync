@@ -257,6 +257,15 @@ body {
   background: var(--bg-card-hover);
 }
 
+/* Chart container styling */
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 40px;
+}
+
 /* header badge showing total active subscriptions */
 .header-badge {
   display: inline-block;

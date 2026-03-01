@@ -3,6 +3,7 @@ import './index.css';
 import { getSubscriptions } from './services/api';
 import SubscriptionForm from './components/SubscriptionForm';
 import SubscriptionCard from './components/SubscriptionCard';
+import MonthlyCostChart from './components/MonthlyCostChart';
 
 function Toast({ message, type, onClose }) {
   useEffect(() => {
@@ -167,6 +168,13 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      {/* Chart (only when subscriptions exist) */}
+      {subscriptions.length > 0 && (
+        <section aria-label="Cost Chart">
+          <MonthlyCostChart subscriptions={subscriptions} />
+        </section>
+      )}
 
       {/* Add Form */}
       <section aria-label="Add Subscription">
