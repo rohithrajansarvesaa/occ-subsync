@@ -106,6 +106,14 @@ export default function App() {
     s.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // compute upcoming renewals within next 7 days
+  const upcomingRenewals = subscriptions.filter((s) => {
+    const today = new Date();
+    const nextDate = new Date(s.nextBillingDate);
+    const diff = (nextDate - today) / (1000 * 60 * 60 * 24);
+    return diff >= 0 && diff <= 7;
+  });
+
   return (
     <div className="app-container">
       {/* Header */}
@@ -167,6 +175,28 @@ export default function App() {
             <div className="stat-sub">per month per service</div>
           </div>
         </div>
+      </section>
+
+      {/* Upcoming renewals */}
+      <section aria-label="Upcoming Renewals">
+        {upcomingRenewals.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">✅</div>
+            <h3>No renewals in the next 7 days</h3>
+          </div>
+        ) : (
+          <div className="renewal-grid">
+            {upcomingRenewals.map((s) => (
+              <div key={s._id} className="renewal-card">
+                <div className="renewal-name">{s.name}</div>
+                <div className="renewal-details">
+                  ₹{(s.billingCycle === 'yearly' ? s.cost / 12 : s.cost).toFixed(2)}/mo
+                  · {new Date(s.nextBillingDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Chart (only when subscriptions exist) */}

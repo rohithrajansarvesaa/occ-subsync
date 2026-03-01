@@ -266,6 +266,32 @@ body {
   margin-bottom: 40px;
 }
 
+/* upcoming renewals */
+.renewal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.renewal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.renewal-name {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+
+.renewal-details {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
 /* header badge showing total active subscriptions */
 .header-badge {
   display: inline-block;
