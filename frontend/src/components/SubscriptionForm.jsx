@@ -31,17 +31,45 @@ const defaultForm = {
 export default function SubscriptionForm({ onSaved, onCancel, initial = null, embedded = false }) {
     const [form, setForm] = useState(initial || defaultForm);
     const [loading, setLoading] = useState(false);
+    // server/submission error banner
     const [error, setError] = useState('');
+    // client-side validation errors keyed by field name
+    const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
-        setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
         setError('');
+        // clear validation error for this field as user types
+        setErrors((prev) => ({ ...prev, [name]: '' }));
+    };
+
+    // performs client-side validation, returns an object mapping field names to messages
+    const validate = () => {
+        const newErrors = {};
+        if (!form.name.trim()) {
+            newErrors.name = 'Service name must not be empty';
+        }
+        if (!form.cost || parseFloat(form.cost) <= 0) {
+            newErrors.cost = 'Cost must be greater than 0';
+        }
+        // compare dates without time component
+        const today = new Date().toISOString().split('T')[0];
+        if (form.nextBillingDate < today) {
+            newErrors.nextBillingDate = 'Next billing date cannot be in the past';
+        }
+        return newErrors;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name.trim()) return setError('Name is required');
-        if (!form.cost || parseFloat(form.cost) <= 0) return setError('Cost must be greater than $0');
+        setError('');
+
+        const validationErrors = validate();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
 
         setLoading(true);
         try {
@@ -78,6 +106,7 @@ export default function SubscriptionForm({ onSaved, onCancel, initial = null, em
                             placeholder="e.g. Netflix"
                             required
                         />
+                        {errors.name && <p className="field-error">{errors.name}</p>}
                     </div>
 
                     <div className="form-group">
@@ -93,6 +122,7 @@ export default function SubscriptionForm({ onSaved, onCancel, initial = null, em
                             placeholder="e.g. 15.99"
                             required
                         />
+                        {errors.cost && <p className="field-error">{errors.cost}</p>}
                     </div>
 
                     <div className="form-group">
@@ -124,6 +154,7 @@ export default function SubscriptionForm({ onSaved, onCancel, initial = null, em
                             onChange={handleChange}
                             required
                         />
+                        {errors.nextBillingDate && <p className="field-error">{errors.nextBillingDate}</p>}
                     </div>
 
                     <div className="form-group">
