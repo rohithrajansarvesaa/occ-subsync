@@ -35,6 +35,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [editTarget, setEditTarget] = useState(null);
   const [toast, setToast] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -80,6 +81,11 @@ export default function App() {
   const yearlyCount = subscriptions.filter((s) => s.billingCycle === 'yearly').length;
   const yearlyTotal = parseFloat((totalMonthlySpend * 12).toFixed(2));
 
+  // apply text search to subscriptions list
+  const filteredSubscriptions = subscriptions.filter((s) =>
+    s.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="app-container">
       {/* Header */}
@@ -87,7 +93,12 @@ export default function App() {
         <div className="header-brand">
           <div className="header-logo">💳</div>
           <div>
-            <h1>SubSync</h1>
+            <h1>
+              SubSync
+              <span className="header-badge" title="Active subscriptions">
+                {subscriptions.length}
+              </span>
+            </h1>
             <p className="header-subtitle">Subscription Management Dashboard</p>
           </div>
         </div>
@@ -138,7 +149,16 @@ export default function App() {
       <section aria-label="Subscription List">
         <div className="section-header">
           <h2 className="section-title">Your Subscriptions</h2>
-          <span className="section-count">{subscriptions.length} services</span>
+          <div className="section-controls">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search services…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <span className="section-count">{filteredSubscriptions.length} services</span>
+          </div>
         </div>
 
         {loading ? (
@@ -149,9 +169,15 @@ export default function App() {
             <h3>No subscriptions yet</h3>
             <p>Add your first subscription using the form above.</p>
           </div>
+        ) : filteredSubscriptions.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">🔍</div>
+            <h3>No matching services</h3>
+            <p>Try a different search term.</p>
+          </div>
         ) : (
           <div className="subscription-list" id="subscription-list">
-            {subscriptions.map((sub) => (
+            {filteredSubscriptions.map((sub) => (
               <SubscriptionCard
                 key={sub._id}
                 sub={sub}

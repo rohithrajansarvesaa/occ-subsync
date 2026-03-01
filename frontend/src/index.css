@@ -200,6 +200,33 @@ body {
   border-radius: 20px;
 }
 
+.section-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-input {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  width: 160px;
+}
+
+/* header badge showing total active subscriptions */
+.header-badge {
+  display: inline-block;
+  margin-left: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 14px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  vertical-align: middle;
+}
+
 /* Add Subscription Form */
 .form-card {
   background: var(--bg-card);
