@@ -53,9 +53,11 @@ pipeline {
         stage('Push Backend to DockerHub') {
             steps {
                 echo '📤 Pushing Backend image to DockerHub...'
-                withDockerRegistry(credentialsId: 'dockerhub', url: '') {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                     sh "docker push ${BACKEND_IMAGE}:${DOCKER_TAG}"
                     sh "docker push ${BACKEND_IMAGE}:latest"
+                    sh 'docker logout'
                 }
             }
         }
@@ -63,9 +65,11 @@ pipeline {
         stage('Push Frontend to DockerHub') {
             steps {
                 echo '📤 Pushing Frontend image to DockerHub...'
-                withDockerRegistry(credentialsId: 'dockerhub', url: '') {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                     sh "docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}"
                     sh "docker push ${FRONTEND_IMAGE}:latest"
+                    sh 'docker logout'
                 }
             }
         }
