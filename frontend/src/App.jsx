@@ -36,6 +36,25 @@ export default function App() {
   const [editTarget, setEditTarget] = useState(null);
   const [toast, setToast] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [theme, setTheme] = useState('dark'); // 'dark' or 'light'
+
+  // initialize theme from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'light' || stored === 'dark') {
+      setTheme(stored);
+      document.documentElement.classList.toggle('light-theme', stored === 'light');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      document.documentElement.classList.toggle('light-theme', next === 'light');
+      localStorage.setItem('theme', next);
+      return next;
+    });
+  };
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -102,8 +121,17 @@ export default function App() {
             <p className="header-subtitle">Subscription Management Dashboard</p>
           </div>
         </div>
-        <div style={{ textAlign: 'right', color: 'var(--text-muted)', fontSize: '13px' }}>
-          <div>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ textAlign: 'right', color: 'var(--text-muted)', fontSize: '13px' }}>
+            <div>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</div>
+          </div>
+          <button
+            className="theme-toggle"
+            aria-label="Toggle dark/light theme"
+            onClick={toggleTheme}
+          >
+            {theme === 'dark' ? '🌞' : '🌙'}
+          </button>
         </div>
       </header>
 
